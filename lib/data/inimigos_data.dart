@@ -6,20 +6,20 @@ List<Inimigo> inimigosDisponiveis = [
     hp: 30,
     ataque: 5,
     defesa: 2,
-    fraqueza: MagiaTipo.Fogo,
+    fraqueza: MagiaTipo.fogo,
   ),
   Inimigo(
     nome: 'Esqueleto',
     hp: 50,
     ataque: 8,
     defesa: 4,
-    fraqueza: MagiaTipo.Raio,
+    fraqueza: MagiaTipo.raio,
   ),
   Inimigo(
     nome: 'Lobo de Gelo',
     hp: 40,
     ataque: 7,
     defesa: 3,
-    fraqueza: MagiaTipo.Fogo,
+    fraqueza: MagiaTipo.fogo,
   ),
 ];

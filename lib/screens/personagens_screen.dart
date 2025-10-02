@@ -36,3 +36,32 @@ class PersonagensScreen extends StatelessWidget {
     );
   }
 }
+
+class PersonagensContent extends StatelessWidget {
+  const PersonagensContent({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: personagens.length,
+      itemBuilder: (context, index) {
+        final personagem = personagens[index];
+        return Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: ListTile(
+            leading: const Icon(Icons.person, size: 40),
+            title: Text(personagem.nome, style: const TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Text('Nível: ${personagem.nivel} | HP: ${personagem.hp}/${personagem.maxHp}'),
+            trailing: const Icon(Icons.arrow_forward_ios),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PersonagemDetailScreen(personagem: personagem)),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+}

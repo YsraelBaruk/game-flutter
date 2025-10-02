@@ -15,11 +15,12 @@ class PersonagemDetailScreen extends StatefulWidget {
   const PersonagemDetailScreen({super.key, required this.personagem});
 
   @override
-  _PersonagemDetailScreenState createState() => _PersonagemDetailScreenState();
+  State<PersonagemDetailScreen> createState() => _PersonagemDetailScreenState();
 }
 
 class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
   Inimigo? inimigoAtual;
+  int _inimigoMaxHp = 0;
   int _multiplicadorMagia = 1;
 
   void _curar(int valor) {
@@ -95,9 +96,16 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
 
   void _encontrarInimigo() {
     setState(() {
-      inimigoAtual = inimigosDisponiveis[Random().nextInt(inimigosDisponiveis.length)];
-      // Reset HP for new encounter
-      inimigoAtual!.hp = 50; 
+      // Cria uma nova instância do inimigo para evitar problemas de referência
+      final inimigoOriginal = inimigosDisponiveis[Random().nextInt(inimigosDisponiveis.length)];
+      inimigoAtual = Inimigo(
+        nome: inimigoOriginal.nome,
+        hp: inimigoOriginal.hp, // Usa o HP original
+        ataque: inimigoOriginal.ataque,
+        defesa: inimigoOriginal.defesa,
+        fraqueza: inimigoOriginal.fraqueza,
+      );
+      _inimigoMaxHp = inimigoOriginal.hp; // Armazena o HP máximo
     });
      gameService.adicionarAoHistorico('Um ${inimigoAtual!.nome} apareceu!');
   }
@@ -231,7 +239,7 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
                         StatusBar(
                           label: 'HP Inimigo', 
                           valorAtual: inimigoAtual!.hp, 
-                          valorMaximo: 50, // Max HP fixo para exemplo
+                          valorMaximo: _inimigoMaxHp, // Usa o HP máximo baseado no inimigo
                           corPositiva: Colors.red,
                           corNegativa: Colors.red.shade900,
                         ),
@@ -241,8 +249,8 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
                           runSpacing: 8,
                           children: [
                              ElevatedButton.icon(onPressed: _ataqueFisico, icon: const Icon(Icons.gavel), label: const Text('Ataque Físico')),
-                             ElevatedButton.icon(onPressed: () => _ataqueMagico(MagiaTipo.Fogo, 10), icon: const Icon(Icons.local_fire_department), label: const Text('Fogo')),
-                             ElevatedButton.icon(onPressed: () => _ataqueMagico(MagiaTipo.Gelo, 10), icon: const Icon(Icons.ac_unit), label: const Text('Gelo')),
+                             ElevatedButton.icon(onPressed: () => _ataqueMagico(MagiaTipo.fogo, 10), icon: const Icon(Icons.local_fire_department), label: const Text('Fogo')),
+                             ElevatedButton.icon(onPressed: () => _ataqueMagico(MagiaTipo.gelo, 10), icon: const Icon(Icons.ac_unit), label: const Text('Gelo')),
                           ],
                         ),
                          const SizedBox(height: 16),

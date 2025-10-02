@@ -1,4 +1,4 @@
-enum MagiaTipo { Fogo, Gelo, Raio }
+enum MagiaTipo { fogo, gelo, raio }
 
 class Inimigo {
   final String nome;
