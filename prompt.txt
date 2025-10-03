@@ -1,0 +1,31 @@
+lib/
+├── main.dart             # Ponto de entrada da aplicação
+|
+├── data/
+│   ├── inimigos_data.dart    # Listas estáticas de inimigos
+│   ├── itens_data.dart       # Listas estáticas de itens
+│   └── personagens_data.dart # Listas estáticas de personagens
+|
+├── models/
+│   ├── personagem.dart       # Classe do modelo de dados do Personagem
+│   ├── item.dart             # Classe do modelo de dados do Item
+│   ├── inimigo.dart          # ... e outros modelos de dados
+│   └── player_state.dart     # Estado geral do jogador (vidas, moedas)
+|
+├── screens/
+│   ├── initial_screen.dart   # Tela inicial (Novo Jogo, Carregar, Sair)
+│   ├── new_game_screen.dart    # Tela para escolher ou criar um novo personagem
+│   ├── create_character_screen.dart # Tela de formulário para criar um personagem
+│   ├── load_game_screen.dart   # Tela para carregar um jogo salvo
+│   ├── main_game_screen.dart   # Tela principal do jogo com navegação
+│   └── personagem_detail_screen.dart # Detalhes do personagem, status e batalha
+|
+├── services/
+│   ├── game_service.dart     # Serviços gerais (ex: histórico de ações)
+│   └── save_load_service.dart # Lógica para salvar e carregar o progresso
+|
+└── widgets/
+    ├── app_bottom_bar.dart   # Widget da barra de navegação inferior
+    └── status_bar.dart       # Widget para exibir barras de HP, Mana, etc.
+
+    
