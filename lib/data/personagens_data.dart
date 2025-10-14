@@ -2,6 +2,7 @@ import '../models/personagem.dart';
 import '../models/item.dart';
 import '../models/missao.dart';
 import '../models/cidade.dart';
+import '../models/inventario.dart';
 
 final List<Personagem> personagens = [
   Personagem(

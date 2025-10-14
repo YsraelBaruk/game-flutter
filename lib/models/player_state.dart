@@ -16,7 +16,10 @@ class PlayerState extends ChangeNotifier {
     if (_inventario.contains(item)) {
       // Lógica de uso do item, por exemplo, recuperar vida
       if (item.nome == 'Poção de Vida') {
-        _vidas = (_vidas + 1).clamp(0, 5); // Ex: Clamp para um máximo de 5 vidas
+        _vidas = (_vidas + 1).clamp(
+          0,
+          5,
+        ); // Ex: Clamp para um máximo de 5 vidas
       }
       _inventario.remove(item);
       notifyListeners();

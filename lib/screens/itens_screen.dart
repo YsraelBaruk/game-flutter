@@ -7,9 +7,7 @@ class ItensScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Inventário Geral'),
-      ),
+      appBar: AppBar(title: const Text('Inventário Geral')),
       body: ListView.builder(
         itemCount: personagens.length,
         itemBuilder: (context, index) {
@@ -22,17 +20,22 @@ class ItensScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    personagem.nome, 
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
+                    personagem.nome,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const Divider(),
                   if (personagem.itens.isEmpty)
                     const Text('Nenhum item.')
                   else
-                    ...personagem.itens.map((item) => ListTile(
-                      leading: const Icon(Icons.shield_outlined),
-                      title: Text(item.nome),
-                    )),
+                    ...personagem.itens.map(
+                      (item) => ListTile(
+                        leading: const Icon(Icons.shield_outlined),
+                        title: Text(item.nome),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -60,17 +63,22 @@ class ItensContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  personagem.nome, 
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
+                  personagem.nome,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const Divider(),
                 if (personagem.itens.isEmpty)
                   const Text('Nenhum item.')
                 else
-                  ...personagem.itens.map((item) => ListTile(
-                    leading: const Icon(Icons.shield_outlined),
-                    title: Text(item.nome),
-                  )),
+                  ...personagem.itens.map(
+                    (item) => ListTile(
+                      leading: const Icon(Icons.shield_outlined),
+                      title: Text(item.nome),
+                    ),
+                  ),
               ],
             ),
           ),

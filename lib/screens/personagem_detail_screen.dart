@@ -7,7 +7,12 @@ import '../models/item.dart';
 import '../data/inimigos_data.dart';
 import '../data/itens_data.dart';
 import '../services/game_service.dart';
+<<<<<<< HEAD
 import '../services/sistemaRecompensas.dart';
+=======
+import '../services/personagemService.dart';
+import '../services/recompensasService.dart';
+>>>>>>> 9b0a1f4b58ee399b23e55dabc637dd3ef10d0cf7
 import '../widgets/status_bar.dart';
 
 class PersonagemDetailScreen extends StatefulWidget {
@@ -96,10 +101,29 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
     setState(() {
       widget.personagem.xp += valor;
       if (widget.personagem.xp >= widget.personagem.proximoNivelXp) {
+<<<<<<< HEAD
         widget.personagem.nivel++;
         widget.personagem.xp = 0;
         widget.personagem.proximoNivelXp =
             (widget.personagem.proximoNivelXp * 1.5).round();
+=======
+        // Usa o novo algoritmo de level up
+        final personagemAtualizado = PersonagemService.processarLevelUp(
+          widget.personagem,
+        );
+
+        // Atualiza os valores do personagem
+        widget.personagem.nivel = personagemAtualizado.nivel;
+        widget.personagem.xp = personagemAtualizado.xp;
+        widget.personagem.proximoNivelXp = personagemAtualizado.proximoNivelXp;
+        widget.personagem.ataque = personagemAtualizado.ataque;
+        widget.personagem.defesa = personagemAtualizado.defesa;
+        widget.personagem.maxHp = personagemAtualizado.maxHp;
+        widget.personagem.hp = personagemAtualizado.hp;
+        widget.personagem.maxMana = personagemAtualizado.maxMana;
+        widget.personagem.mana = personagemAtualizado.mana;
+
+>>>>>>> 9b0a1f4b58ee399b23e55dabc637dd3ef10d0cf7
         _mostrarDialog(
           'Subiu de nível! Agora você está no nível ${widget.personagem.nivel}!',
         );
@@ -112,6 +136,7 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
 
   void _encontrarInimigo() {
     setState(() {
+<<<<<<< HEAD
       // Escolhe inimigo aleatório
       final inimigoOriginal =
           inimigosDisponiveis[Random().nextInt(inimigosDisponiveis.length)];
@@ -123,6 +148,24 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
         fraqueza: inimigoOriginal.fraqueza,
       );
       _inimigoMaxHp = inimigoOriginal.hp;
+=======
+      // Usa o novo sistema para encontrar inimigo apropriado
+      final inimigoEscolhido = RecompensasService.obterInimigoApropriado(
+        inimigosDisponiveis,
+        widget.personagem.nivel,
+      );
+
+      if (inimigoEscolhido != null) {
+        inimigoAtual = inimigoEscolhido.copyWith(hp: inimigoEscolhido.maxHp);
+        _inimigoMaxHp = inimigoEscolhido.maxHp;
+      } else {
+        // Fallback para inimigo aleatório se não encontrar apropriado
+        final inimigoOriginal =
+            inimigosDisponiveis[Random().nextInt(inimigosDisponiveis.length)];
+        inimigoAtual = inimigoOriginal.copyWith(hp: inimigoOriginal.maxHp);
+        _inimigoMaxHp = inimigoOriginal.maxHp;
+      }
+>>>>>>> 9b0a1f4b58ee399b23e55dabc637dd3ef10d0cf7
     });
     gameService.adicionarAoHistorico('Um ${inimigoAtual!.nome} apareceu!');
   }
@@ -173,6 +216,7 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
 
   void _verificarFimBatalha() {
     if (inimigoAtual != null && inimigoAtual!.hp == 0) {
+<<<<<<< HEAD
       // Processa apenas o drop de itens
       final itensDropados = SistemaRecompensas.processarDropItens(
         inimigoAtual!,
@@ -189,6 +233,37 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
       }
 
       _mostrarDialog(mensagem);
+=======
+      // Processa recompensas do inimigo derrotado
+      final recompensas = RecompensasService.processarRecompensas(
+        inimigoAtual!,
+      );
+
+      // Aplica as recompensas
+      RecompensasService.aplicarRecompensas(
+        widget.personagem,
+        recompensas,
+        widget.personagem.inventario,
+      );
+
+      // Ganha XP baseado nas recompensas
+      _ganharXp(recompensas['experiencia'] as int);
+
+      // Mostra informações das recompensas
+      final moedasGanhas = recompensas['moedas'] as int;
+      final itensGanhos = recompensas['itens'] as List<Item>;
+
+      String mensagemRecompensas = '${inimigoAtual!.nome} foi derrotado!\n';
+      mensagemRecompensas +=
+          'XP: +${recompensas['experiencia']} | Moedas: +$moedasGanhas';
+
+      if (itensGanhos.isNotEmpty) {
+        mensagemRecompensas +=
+            '\nItens: ${itensGanhos.map((i) => i.nome).join(', ')}';
+      }
+
+      _mostrarDialog(mensagemRecompensas);
+>>>>>>> 9b0a1f4b58ee399b23e55dabc637dd3ef10d0cf7
       gameService.adicionarAoHistorico('${inimigoAtual!.nome} foi derrotado.');
 
       setState(() {
@@ -197,6 +272,7 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
     }
   }
 
+<<<<<<< HEAD
   void _coletarRecompensas() {
     final recompensas = SistemaRecompensas.aplicarRecompensasAcumuladas(
       widget.personagem,
@@ -227,6 +303,8 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
     }
   }
 
+=======
+>>>>>>> 9b0a1f4b58ee399b23e55dabc637dd3ef10d0cf7
   void _mostrarDialog(String mensagem) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(mensagem), duration: const Duration(seconds: 2)),
@@ -280,6 +358,25 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
                     'Nível: ${widget.personagem.nivel}',
                     style: const TextStyle(color: Colors.white, fontSize: 16),
                   ),
+<<<<<<< HEAD
+=======
+                  const SizedBox(height: 8),
+                  Text(
+                    'Ataque: ${widget.personagem.ataque}/${PersonagemService.calcularLimiteMaximoAtaque(widget.personagem.nivel)}',
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                  Text(
+                    'Defesa: ${widget.personagem.defesa}/${PersonagemService.calcularLimiteMaximoDefesa(widget.personagem.nivel)}',
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Moedas: ${widget.personagem.inventario.moedas.quantidade}',
+                    style: const TextStyle(color: Colors.yellow, fontSize: 14),
+                  ),
+                  const SizedBox(height: 8),
+                  _buildProximoLevelUpInfo(),
+>>>>>>> 9b0a1f4b58ee399b23e55dabc637dd3ef10d0cf7
                 ],
               ),
             ),
@@ -311,11 +408,14 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
                     icon: const Icon(Icons.star),
                     label: const Text('Ganhar XP'),
                   ),
+<<<<<<< HEAD
                   ElevatedButton.icon(
                     onPressed: _coletarRecompensas,
                     icon: const Icon(Icons.card_giftcard),
                     label: const Text('Coletar Recompensas'),
                   ),
+=======
+>>>>>>> 9b0a1f4b58ee399b23e55dabc637dd3ef10d0cf7
                 ],
               ),
             ),
@@ -334,13 +434,30 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
                   : Column(
                       children: [
                         Text(
+<<<<<<< HEAD
                           'Inimigo: ${inimigoAtual!.nome}',
+=======
+                          'Inimigo: ${inimigoAtual!.nome} (Nível ${inimigoAtual!.nivel})',
+>>>>>>> 9b0a1f4b58ee399b23e55dabc637dd3ef10d0cf7
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+<<<<<<< HEAD
+=======
+                        const SizedBox(height: 4),
+                        Text(
+                          'Ataque: ${inimigoAtual!.ataque} | Defesa: ${inimigoAtual!.defesa}',
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 12,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        _buildRecompensasInimigo(),
+>>>>>>> 9b0a1f4b58ee399b23e55dabc637dd3ef10d0cf7
                         const SizedBox(height: 8),
                         StatusBar(
                           label: 'HP Inimigo',
@@ -481,6 +598,7 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
     );
   }
 
+<<<<<<< HEAD
   Widget _buildRecompensasAcumuladas() {
     final recompensas = SistemaRecompensas.recompensasAtuais;
 
@@ -520,6 +638,113 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
           label: const Text('Coletar Tudo'),
         ),
       ],
+=======
+  Widget _buildProximoLevelUpInfo() {
+    final infoProximoLevel = PersonagemService.obterInfoProximoLevelUp(
+      widget.personagem,
+    );
+    final crescimento = infoProximoLevel['crescimento'] as Map<String, int>;
+    final xpRestante = infoProximoLevel['xpRestante'] as int;
+
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.blue.shade900,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.blue.shade300),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Próximo Level Up',
+            style: TextStyle(
+              color: Colors.blue.shade200,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'XP restante: $xpRestante',
+            style: const TextStyle(color: Colors.white, fontSize: 11),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Ataque: +${crescimento['ataque']}',
+                style: const TextStyle(color: Colors.white, fontSize: 10),
+              ),
+              Text(
+                'Defesa: +${crescimento['defesa']}',
+                style: const TextStyle(color: Colors.white, fontSize: 10),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'HP: +${crescimento['hp']}',
+                style: const TextStyle(color: Colors.white, fontSize: 10),
+              ),
+              Text(
+                'Mana: +${crescimento['mana']}',
+                style: const TextStyle(color: Colors.white, fontSize: 10),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRecompensasInimigo() {
+    final infoRecompensas = RecompensasService.obterInfoRecompensas(
+      inimigoAtual!,
+    );
+
+    return Container(
+      padding: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: Colors.green.shade900,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: Colors.green.shade300),
+      ),
+      child: Column(
+        children: [
+          Text(
+            'Recompensas',
+            style: TextStyle(
+              color: Colors.green.shade200,
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'XP: ${infoRecompensas['experiencia']}',
+                style: const TextStyle(color: Colors.white, fontSize: 9),
+              ),
+              Text(
+                'Moedas: ${infoRecompensas['moedas']}',
+                style: const TextStyle(color: Colors.white, fontSize: 9),
+              ),
+            ],
+          ),
+          if (infoRecompensas['itensPossiveis'].isNotEmpty)
+            Text(
+              'Chance item: ${(infoRecompensas['chanceItem'] * 100).round()}%',
+              style: const TextStyle(color: Colors.white70, fontSize: 8),
+            ),
+        ],
+      ),
+>>>>>>> 9b0a1f4b58ee399b23e55dabc637dd3ef10d0cf7
     );
   }
 }

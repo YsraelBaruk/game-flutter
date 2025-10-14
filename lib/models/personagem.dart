@@ -1,14 +1,15 @@
 import 'item.dart';
 import 'missao.dart';
 import 'cidade.dart';
+import 'inventario.dart';
 
 class Personagem {
   final String nome;
   final String imagem;
-  List<Item> itens;
+  final Inventario inventario;
   final Missao missao;
   final Cidade cidade;
-  
+
   int maxHp;
   int hp;
   int maxMana;
@@ -22,7 +23,7 @@ class Personagem {
   Personagem({
     required this.nome,
     required this.imagem,
-    required this.itens,
+    required this.inventario,
     required this.missao,
     required this.cidade,
     this.maxHp = 100,
@@ -35,4 +36,7 @@ class Personagem {
     this.ataque = 10,
     this.defesa = 5,
   });
+
+  // Getter para compatibilidade com código existente
+  List<Item> get itens => inventario.itens;
 }
