@@ -22,7 +22,7 @@ class _CreateCharacterScreenState extends State<CreateCharacterScreen> {
         nome: _nameController.text.trim(),
         imagem: 'assets/bruce.png', // Atribui uma imagem padrão para novos personagens
         itens: [], // Começa com um inventário vazio
-        missao: Missao(descricao: 'Desbravar o mundo e se tornar uma lenda.'),
+  missao: Missao(id: 'm_new', descricao: 'Desbravar o mundo e se tornar uma lenda.', objetivoTotal: 5),
         cidade: Cidade(nome: 'Vila Inicial'),
         hp: 100,
         maxHp: 100,

@@ -21,7 +21,7 @@ class SaveLoadService {
       nome: 'Herói Carregado',
       imagem: 'assets/hero.png',
       itens: [Item(nome: 'Espada de Ferro', preco: 100, descricao: 'Uma espada confiável')],
-      missao: Missao(descricao: 'Continuar a aventura onde parou'),
+  missao: Missao(id: 'm_load', descricao: 'Continuar a aventura onde parou', objetivoTotal: 10, progressoAtual: 3),
       cidade: Cidade(nome: 'Vila Inicial'),
       nivel: 5,
       hp: 120,

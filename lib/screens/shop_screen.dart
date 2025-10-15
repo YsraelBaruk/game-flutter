@@ -23,9 +23,9 @@ class ShopScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var playerState = Provider.of<PlayerState>(context);
     final List<Item> itensAVenda = [
-      Item(nome: 'Poção de Vida', descricao: 'Recupera 1 vida.', preco: 50),
-      Item(nome: 'Espada Curta', descricao: 'Aumenta o ataque.', preco: 150),
-      Item(nome: 'Escudo de Madeira', descricao: 'Aumenta a defesa.', preco: 120),
+      const Item(nome: 'Poção de Vida', descricao: 'Recupera 30 HP.', preco: 50, tipo: TipoItem.curaHp, valorEfeito: 30),
+      const Item(nome: 'Espada Curta', descricao: 'Aumenta o ataque (não consumível).', preco: 150, tipo: TipoItem.buffAtaque, valorEfeito: 4, consumivel: false),
+      const Item(nome: 'Escudo de Madeira', descricao: 'Aumenta a defesa (não consumível).', preco: 120, tipo: TipoItem.buffDefesa, valorEfeito: 3, consumivel: false),
     ];
 
     return Scaffold(
@@ -39,7 +39,7 @@ class ShopScreen extends StatelessWidget {
           return ListTile(
             leading: const Icon(Icons.shopping_cart),
             title: Text(item.nome),
-            subtitle: Text('${item.descricao} - Preço: ${item.preco} moedas'),
+            subtitle: Text('${item.descricao}\nPreço: ${item.preco} • Venda: ${item.precoVenda}'),
             onTap: () => _comprarItem(context, playerState, item),
           );
         },

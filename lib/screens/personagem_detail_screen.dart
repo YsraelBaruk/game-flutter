@@ -82,6 +82,58 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
     gameService
         .adicionarAoHistorico('${itemRemovido.nome} foi removido do inventário.');
   }
+
+  void _usarItem(Item item) {
+    final p = widget.personagem;
+    switch (item.tipo) {
+      case TipoItem.curaHp:
+        _curar(item.valorEfeito);
+        break;
+      case TipoItem.curaMana:
+        _recuperarMana(item.valorEfeito);
+        break;
+      case TipoItem.buffAtaque:
+        setState(() {
+          p.ataque = (p.ataque + item.valorEfeito).clamp(0, Personagem.maxAtaqueCap);
+        });
+        _mostrarDialog('Ataque +${item.valorEfeito}!');
+        gameService.adicionarAoHistorico('${p.nome} recebeu buff de ataque.');
+        break;
+      case TipoItem.buffDefesa:
+        setState(() {
+          p.defesa = (p.defesa + item.valorEfeito).clamp(0, Personagem.maxDefesaCap);
+        });
+        _mostrarDialog('Defesa +${item.valorEfeito}!');
+        gameService.adicionarAoHistorico('${p.nome} recebeu buff de defesa.');
+        break;
+      case TipoItem.danoMagico:
+        if (inimigoAtual != null) {
+          setState(() {
+            inimigoAtual!.hp = max(0, inimigoAtual!.hp - item.valorEfeito);
+          });
+          _mostrarDialog('Dano mágico ${item.valorEfeito}!');
+          gameService.adicionarAoHistorico('Item causou ${item.valorEfeito} de dano em ${inimigoAtual!.nome}.');
+          _verificarFimBatalha();
+        }
+        break;
+      default:
+        _mostrarDialog('O item não tem efeito em batalha.');
+    }
+
+    if (item.consumivel) {
+      // remove uma unidade do item
+      final idx = widget.personagem.itens.indexOf(item);
+      if (idx >= 0) _removerItem(idx);
+    }
+  }
+
+  void _venderItem(int index) {
+    final item = widget.personagem.itens[index];
+    final playerState = Provider.of<PlayerState>(context, listen: false);
+    playerState.adicionarMoedas(item.precoVenda);
+    _removerItem(index);
+    _mostrarDialog('Vendido ${item.nome} por ${item.precoVenda} moedas.');
+  }
   
   void _ganharXp(int valor) {
     setState(() {
@@ -175,6 +227,11 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
           gameService.adicionarAoHistorico('Drop: ${drop.itemNome} x$qtd');
         }
       }
+
+      // Progresso de missão: cada vitória conta +1 por padrão
+      setState(() {
+        widget.personagem.missao.adicionarProgresso(1);
+      });
 
       setState(() {
         inimigoAtual = null;
@@ -297,9 +354,26 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
                   ...widget.personagem.itens.asMap().entries.map((entry) => ListTile(
                         leading: const Icon(Icons.shield, color: Colors.white),
                         title: Text(entry.value.nome, style: const TextStyle(color: Colors.white)),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.remove_circle_outline, color: Colors.red),
-                          onPressed: () => _removerItem(entry.key),
+                        subtitle: Text(entry.value.descricao, style: const TextStyle(color: Colors.white70)),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.play_circle_fill, color: Colors.lightBlueAccent),
+                              tooltip: 'Usar',
+                              onPressed: () => _usarItem(entry.value),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.sell, color: Colors.amber),
+                              tooltip: 'Vender',
+                              onPressed: () => _venderItem(entry.key),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.remove_circle_outline, color: Colors.red),
+                              tooltip: 'Remover',
+                              onPressed: () => _removerItem(entry.key),
+                            ),
+                          ],
                         ),
                       )),
                    const SizedBox(height: 10),
