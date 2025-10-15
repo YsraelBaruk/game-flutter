@@ -131,14 +131,14 @@ Notas de modelagem
 
 ## 4) Itens concretos para executar (checklist)
 
-- [ ] Criar projeto Firebase, habilitar Realtime Database e (opcional) Authentication.
+- [x] Criar projeto Firebase, habilitar Realtime Database e (opcional) Authentication.
 - [ ] Android: baixar `google-services.json` em `android/app/`.
 - [ ] iOS (se usar): adicionar `GoogleService-Info.plist` em `ios/Runner/`.
-- [ ] Adicionar dependências no `pubspec.yaml`:
-	- [ ] firebase_core
-	- [ ] firebase_database
+- [x] Adicionar dependências no `pubspec.yaml`:
+	- [x] firebase_core
+	- [x] firebase_database
 	- [ ] (opcional) firebase_auth
-- [ ] Rodar `flutter pub get`.
+- [x] Rodar `flutter pub get`.
 - [ ] Android Gradle (Kotlin DSL): em `android/app/build.gradle.kts`, adicionar `id("com.google.gms.google-services")`.
 - [ ] Confirmar repositórios `google()` e `mavenCentral()` (já presentes).
 - [ ] Inicializar Firebase no `main.dart` com `Firebase.initializeApp()` (e `FirebaseOptions` no Web).
@@ -170,4 +170,58 @@ Notas de modelagem
 - Sincronização em tempo real com streams (`onValue`) para refletir alterações instantaneamente na UI.
 - Normalização de dados (ex.: catálogo de itens global e inventário por referência + quantidade).
 - Migração futura para Cloud Firestore se precisar de queries mais ricas.
+
+## 7) Usando Firebase CLI (firebase-tools) – passos rápidos
+
+Observação: você já instalou o CLI com `npm install -g firebase-tools`.
+
+`dart pub global activate flutterfire_cli`
+
+
+`flutterfire configure`
+
+1. Login
+
+```bash
+firebase login
+```
+
+2. Selecionar o projeto (definir alias)
+
+```bash
+# Liste os projetos disponíveis na sua conta
+firebase projects:list
+
+# Selecione o projeto que quer usar neste diretório (define um alias, ex.: "dev" ou "prod")
+firebase use --add <projectId>
+firebase use --add app-flutter-39888
+```
+
+3. (Opcional) Listar apps do projeto e obter configs SDK
+
+
+4. Inicializar/Configurar Realtime Database com arquivos locais
+
+Já adicionamos arquivos padrão:
+- `firebase.json` apontando para `database.rules.json`
+- `database.rules.json` com regras de desenvolvimento (ajuste para produção depois)
+
+Se preferir usar o wizard:
+
+```bash
+firebase init database
+```
+
+5. Deploy das regras do Realtime Database
+
+```bash
+firebase deploy --only database
+```
+
+6. Alternar entre projetos (se tiver múltiplos)
+
+```bash
+firebase use <alias-ou-projectId>
+```
+
 
