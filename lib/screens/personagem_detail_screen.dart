@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import '../models/personagem.dart';
 import '../models/inimigo.dart';
 import '../models/item.dart';
+import '../models/player_state.dart';
+import 'package:provider/provider.dart';
 import '../data/inimigos_data.dart';
 import '../data/itens_data.dart';
 import '../services/game_service.dart';
@@ -83,12 +85,9 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
   
   void _ganharXp(int valor) {
     setState(() {
-      widget.personagem.xp += valor;
-      if (widget.personagem.xp >= widget.personagem.proximoNivelXp) {
-        widget.personagem.nivel++;
-        widget.personagem.xp = 0;
-        widget.personagem.proximoNivelXp = (widget.personagem.proximoNivelXp * 1.5).round();
-        _mostrarDialog('Subiu de nível! Agora você está no nível ${widget.personagem.nivel}!');
+      final niveis = widget.personagem.ganharXp(valor);
+      if (niveis > 0) {
+        _mostrarDialog('Subiu ${niveis} nível(is)! Nível atual: ${widget.personagem.nivel}');
         gameService.adicionarAoHistorico('${widget.personagem.nome} subiu para o nível ${widget.personagem.nivel}!');
       }
     });
@@ -104,6 +103,9 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
         ataque: inimigoOriginal.ataque,
         defesa: inimigoOriginal.defesa,
         fraqueza: inimigoOriginal.fraqueza,
+        xpRecompensa: inimigoOriginal.xpRecompensa,
+        moedasRecompensa: inimigoOriginal.moedasRecompensa,
+        drops: inimigoOriginal.drops,
       );
       _inimigoMaxHp = inimigoOriginal.hp; // Armazena o HP máximo
     });
@@ -151,9 +153,29 @@ class _PersonagemDetailScreenState extends State<PersonagemDetailScreen> {
 
   void _verificarFimBatalha() {
     if (inimigoAtual != null && inimigoAtual!.hp == 0) {
-      _mostrarDialog('${inimigoAtual!.nome} foi derrotado!');
-      gameService.adicionarAoHistorico('${inimigoAtual!.nome} foi derrotado.');
-      _ganharXp(50); // Ganha 50 XP por vitória
+      final vencido = inimigoAtual!;
+      _mostrarDialog('${vencido.nome} foi derrotado!');
+      gameService.adicionarAoHistorico('${vencido.nome} foi derrotado.');
+
+      // Recompensas garantidas: XP e moedas
+  _ganharXp(vencido.xpRecompensa);
+      // Acessa PlayerState via InheritedWidget/Provider do topo
+  final playerState = Provider.of<PlayerState>(context, listen: false);
+  playerState.adicionarMoedas(vencido.moedasRecompensa);
+  _mostrarDialog('+${vencido.moedasRecompensa} moedas recebidas!');
+
+      // Drops de itens: rola chance para cada possível drop
+      final rng = Random();
+      for (final drop in vencido.drops) {
+        if (rng.nextDouble() <= drop.chance) {
+          final qtd = drop.quantidadeMin + rng.nextInt(drop.quantidadeMax - drop.quantidadeMin + 1);
+          for (int i = 0; i < qtd; i++) {
+            _adicionarItem(Item(nome: drop.itemNome));
+          }
+          gameService.adicionarAoHistorico('Drop: ${drop.itemNome} x$qtd');
+        }
+      }
+
       setState(() {
         inimigoAtual = null;
       });
